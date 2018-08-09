@@ -1,18 +1,63 @@
 <html>
 <head>
 <script src="js/bodymovin-to-smil.js"></script>
+<script src="js/FileSaver.min.js"></script>
+<style>
+body{
+	font-family: sans-serif;
+	padding:20px;
+}
+
+#dropContainer:hover{
+	border-color:#55EE22 !important;
+}
+</style>
 </head>
 <body>
-<input type="file" value="Choose a JSON file" id="input" style="position:absolute;left:200px;color:"#999999">
+
+<div id="dropContainer" style="border:8px dashed #ddd;height:100px;padding:20px">
+	Drop a Lottie .json here to convert and download a self-contained SVG animation (SMIL)
+</div>
+
+<input type="file" value="Choose a JSON file" id="fileInput" style="position:absolute;margin:20px;color:#999999">
+
 
 <script>
-var fileInput = document.getElementById("input");
+
+var fileInput = document.getElementById("fileInput");
+
+dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
+  evt.preventDefault();
+};
+
+dropContainer.ondrop = function(evt) {
+  fileInput.files = evt.dataTransfer.files;
+  evt.preventDefault();
+};
+
 fileInput.addEventListener('change', function(e) {
 	var file = fileInput.files[0];
+
 	var reader = new FileReader();
     reader.onload = function(e) {
+    		try {
     	 	//importProject.importJSON(JSON.parse(reader.result));
-    		console.log(reader.result)
+    		bodymovinToSmil(JSON.parse(reader.result))
+				.then(function(xml){
+					var blob = new Blob([xml], {type: "image/svg+xml;charset=utf-8"});
+					saveAs(blob, file.name.replace(/\.[^/.]+$/, "")+".svg");    
+				}).catch(function(err){
+						document.getElementById("dropContainer").innerHTML = 
+						"Something went wrong, SVG conversion failed :( <br>Check out the supported features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a>";				
+						console.log(err);
+				});
+			}	
+			catch(err){
+				document.getElementById("dropContainer").innerHTML = 
+				"JSON parsing failed :( — try to check the JSON for errors with an online validator for example";
+			}	
+				
+				
     	    }
     	
 	reader.readAsText(file);
@@ -21,3 +66,5 @@ fileInput.addEventListener('change', function(e) {
 </script>
 </body>
 </html>
+
+
