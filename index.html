@@ -10,11 +10,11 @@ var fileInput = document.getElementById("input");
 fileInput.addEventListener('change', function(e) {
 	var file = fileInput.files[0];
 	var reader = new FileReader();
-    	reader.onload = function(e) {
+    reader.onload = function(e) {
     	 	//importProject.importJSON(JSON.parse(reader.result));
     		console.log(reader.result)
     	    }
-    	}
+    	
 	reader.readAsText(file);
 });
 
