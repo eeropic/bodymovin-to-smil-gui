@@ -3,5 +3,21 @@
 <script src="js/bodymovin-to-smil.js"></script>
 </head>
 <body>
+<input type="file" value="Choose a JSON file" id="input" style="position:absolute;left:200px;color:"#999999">
+
+<script>
+var fileInput = document.getElementById("input");
+fileInput.addEventListener('change', function(e) {
+	var file = fileInput.files[0];
+	var reader = new FileReader();
+    	reader.onload = function(e) {
+    	 	//importProject.importJSON(JSON.parse(reader.result));
+    		console.log(reader.result)
+    	    }
+    	}
+	reader.readAsText(file);
+});
+
+</script>
 </body>
 </html>
