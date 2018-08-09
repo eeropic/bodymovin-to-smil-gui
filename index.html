@@ -15,7 +15,7 @@ body{
 </head>
 <body>
 
-<div id="dropContainer" style="border:8px dashed #ddd;height:100px;padding:20px">
+<div id="dropContainer" style="border:8px dashed #ddd;height:60%;padding:20px">
 	Drop a Lottie .json here to convert and download a self-contained SVG animation (SMIL)
 </div>
 
@@ -48,8 +48,11 @@ fileInput.addEventListener('change', function(e) {
 					saveAs(blob, file.name.replace(/\.[^/.]+$/, "")+".svg");    
 				}).catch(function(err){
 						document.getElementById("dropContainer").innerHTML = 
-						"Something went wrong, SVG conversion failed :( <br>Check out the supported features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a>";				
+						`Something went wrong, SVG conversion failed on ${file.name} :(<br>
+						Check out the supported features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a><br><br>
+						${err}`;				
 						console.log(err);
+						
 				});
 			}	
 			catch(err){
