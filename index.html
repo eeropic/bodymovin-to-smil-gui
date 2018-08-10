@@ -8,15 +8,29 @@ body{
 	padding:20px;
 }
 
-#dropContainer:hover{
-	border-color:#55EE22 !important;
+#dropContainer {
+	border:8px dashed #ddd;
+	height:60%;
+	padding:20px;
+	transition:0.2s;
 }
+
+#dropContainer:hover{
+	border-color:#55EE22;
+}
+
+#dropContainer:-moz-drag-over{
+	border-color:#55EE22;
+}
+
 </style>
 </head>
 <body>
 
-<div id="dropContainer" style="border:8px dashed #ddd;height:60%;padding:20px">
-	Drop a Lottie .json here to convert and download a self-contained SVG animation (SMIL)
+<div id="dropContainer">
+	Drop a Lottie/Bodymovin .json here to convert and <br>download a self-contained SVG animation (SMIL)<br>
+	<br>
+	Check out the supported features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a><br><br>
 </div>
 
 <input type="file" value="Choose a JSON file" id="fileInput" style="position:absolute;margin:20px;color:#999999">
@@ -31,13 +45,21 @@ dropContainer.ondragover = dropContainer.ondragenter = function(evt) {
 };
 
 dropContainer.ondrop = function(evt) {
-  fileInput.files = evt.dataTransfer.files;
-  evt.preventDefault();
+	fileInput.files = evt.dataTransfer.files;
+	evt.preventDefault();
+
+	if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
+		fileInput.dispatchEvent(new Event('change'));
+	}
+
 };
 
 fileInput.addEventListener('change', function(e) {
-	var file = fileInput.files[0];
+	
+	console.log('yes')
 
+	var file = fileInput.files[0];
+	
 	var reader = new FileReader();
     reader.onload = function(e) {
     		try {
@@ -45,11 +67,12 @@ fileInput.addEventListener('change', function(e) {
     		bodymovinToSmil(JSON.parse(reader.result))
 				.then(function(xml){
 					var blob = new Blob([xml], {type: "image/svg+xml;charset=utf-8"});
-					saveAs(blob, file.name.replace(/\.[^/.]+$/, "")+".svg");    
+					saveAs(blob, file.name.replace(/\.[^/.]+$/, "")+".svg");
+
 				}).catch(function(err){
 						document.getElementById("dropContainer").innerHTML = 
 						`Something went wrong, SVG conversion failed on ${file.name} :(<br>
-						Check out the supported features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a><br><br>
+						Check out the supported After Effects features at <a href='https://github.com/bodymovin/bodymovin-to-smil'>bodymovin-to-smil</a><br><br>
 						${err}`;				
 						console.log(err);
 						
